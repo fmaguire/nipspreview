@@ -13,7 +13,7 @@ class Paper:
 
 # create a subclass of HTMLParser and override handler methods
 # this is an event-driven parser so we maintain a state etc.
-# this is super hacky and tuned to the specifics of the .html 
+# this is super hacky and tuned to the specifics of the .html
 # page provided by NIPS.
 class MyHTMLParser(HTMLParser):
 	def __init__(self):
@@ -29,10 +29,10 @@ class MyHTMLParser(HTMLParser):
 		for k,v in attrs:
 			if k == 'name':
 				print "New paper: " + v
-				
+
 				if self.firstPaperEncountered:
 					# push current paper to stack
-					self.allPapers.append(self.curPaper) 
+					self.allPapers.append(self.curPaper)
 
 				# this signals new paper being read
 				self.curPaper = Paper() # start a new paper
@@ -50,25 +50,30 @@ class MyHTMLParser(HTMLParser):
 		if len(s) == 0: return
 
 		# title is first data encountered, then authors
-		if self.curPaper.title == "": 
+		if self.curPaper.title == "":
 			self.curPaper.title = data
 			print 'title ' + data
 			return
 
-		if self.curPaper.authors == "": 
+		if self.curPaper.authors == "":
 			self.curPaper.authors = data
 			print 'authors ' + data
 			return
 
 
-parser = MyHTMLParser()
-f = open('nips25offline/nips25.html').read()
-parser.feed(f)
+def scrape(offline_html):
+    """
+    Scrape NIPS papers
+    """
 
-outdict = {}
-for p in parser.allPapers:
-	outdict[p.paper] = (p.title, p.authors)
+    parser = MyHTMLParser()
+    f = open(offline_html).read()
+    parser.feed(f)
 
-# dump a dictionary indexed by paper id that points to (title, authors) tuple
-pickle.dump(outdict, open("papers.p", "wb"))
+    outdict = {}
+    for p in parser.allPapers:
+    	outdict[p.paper] = (p.title, p.authors)
+
+    # dump a dictionary indexed by paper id that points to (title, authors) tuple
+    pickle.dump(outdict, open("papers.p", "wb"))
 

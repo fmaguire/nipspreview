@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: nipspreview
+Version: 0.2
+Summary: Script to generate NIPS LDA based paper previews
+Home-page: UNKNOWN
+Author: Andrej Karpathy modified by Finlay Maguire
+Author-email: finlaymaguire@gmail.com
+License: WTFPL
+Description: UNKNOWN
+Platform: UNKNOWN

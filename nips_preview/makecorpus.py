@@ -2,7 +2,6 @@
 
 import os
 from string import punctuation
-from operator import itemgetter
 import re
 
 # load in stopwords (i.e. boring words, these we will ignore)
@@ -31,12 +30,12 @@ for i,f in enumerate(pdfs):
 	words = [x.lower() for x in txtlst if re.match('^[\w-]+$', x) is not None] # take only alphanumerics
 	words = [x for x in words if len(x)>2 and (not x in stopwords)] # remove stop words
 
-	wcount = {} 
+	wcount = {}
 	for w in words: wcount[w] = wcount.get(w, 0) + 1
 	words = [x for x in words if wcount[x] >= 3] # only take words that occurr at least a bit (for efficiency)
 
 	outf.write(" ".join(words))
 	outf.write("\n")
-	
+
 outf.close()
 
