@@ -7,9 +7,9 @@ import os
 import nips_preview
 from nips_preview import utils
 from nips_preview import scrape
-from nips_preview import pdf_parsing
-from nips_preview import lda
-from nips_preview import generate_output
+#from nips_preview import pdf_parsing
+#from nips_preview import lda
+#from nips_preview import generate_output
 
 
 
@@ -24,14 +24,16 @@ def main(args):
     # build project structure
     project = utils.build_dir_structure(output_path)
 
-    # get source html page
-    data = scrape.parse_html(proceedings_html, project['data'])
+    # scrape pdfs using the existence of papers.pkl as a marker
+    # to check if this is necessary
+    if not os.path.exists(os.path.join(project['data'], 'papers.pkl'));
+        data = scrape.parse_html(proceedings_html, project['data'])
 
     # get topwords
-    top_words = pdf_parsing.pdf_to_words(data)
+    #top_words = pdf_parsing.pdf_to_words(data)
 
-    # generate thumbnails
-    data = pdf_parsing.pdf_to_thumbnail(data)
+    ## generate thumbnails
+    #data = pdf_parsing.pdf_to_thumbnail(data)
 
     # create corpus
     # all_papers =

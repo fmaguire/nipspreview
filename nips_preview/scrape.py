@@ -7,6 +7,8 @@ the papers
 
 
 from bs4 import BeautifulSoup
+import pickle
+import os
 import urllib.request
 
 def get_source(html):
@@ -43,8 +45,9 @@ def parse_html(html, data_dir):
                 continue
 
             # get pdf
+            print("Scraping: {}".format(title))
             pdf = get_source(url + ".pdf")
-            pdf_path = os.path.join(data_dir, title+".pdf")
+            pdf_path = os.path.join(data_dir, url.split('/')[-1] + ".pdf")
 
             with open(pdf_path, 'wb') as fh:
                 fh.write(pdf)
@@ -58,8 +61,9 @@ def parse_html(html, data_dir):
                                       'authors': authors,
                                       'abstract': abstract,
                                       'url': url,
-                                      'pdf': pdf_path}})
+                                      'pdf_path': pdf_path}})
 
-    with open(os.path.join(data_dir, 'papers.pkl')
+    with open(os.path.join(data_dir, 'papers.pkl'), 'wb') as fh:
+        pickle.dump(papers, fh)
 
     return papers

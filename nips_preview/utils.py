@@ -16,13 +16,16 @@ def build_dir_structure(path):
         os.mkdir(path)
     except FileExistsError:
         print("Directory Already Exists")
-        sys.exit(1)
+        print("Proceeding")
 
     directories = {'base': path}
 
     for subdir in ["data", "content", "abstracts", "thumbs", "js"]:
         subpath = os.path.join(path, subdir)
-        os.mkdir(subpath)
+        try:
+            os.mkdir(subpath)
+        except FileExistsError:
+            pass
         directories.update({subdir: subpath})
 
     return directories

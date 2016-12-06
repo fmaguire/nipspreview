@@ -8,7 +8,7 @@ import os
 from string import punctuation
 from operator import itemgetter
 import re
-import cPickle as pickle
+import pickle
 
 
 def pdf_to_words(data, data_dir):
@@ -21,7 +21,7 @@ def pdf_to_words(data, data_dir):
     N = 100 # how many top words to retain
 
     # load in stopwords (i.e. boring words, these we will ignore)
-    with open("stopwords.txt") as fh;
+    with open("stopwords.txt") as fh:
         stopwords = fh.read().split()
         stopwords = [x.strip(punctuation) for x in stopwords if len(x)>2]
 
@@ -31,28 +31,29 @@ def pdf_to_words(data, data_dir):
     for paper_id, info in data:
 
     	# create text file
-    	cmd = "pdftotext {} {}".format(info['pdf_path'], "out.txt")
-    	os.system(cmd)
+        cmd = "pdftotext {} {}".format(info['pdf_path'], "out.txt")
+        os.system(cmd)
 
         with open('out.txt') as fh:
             # get all words in a giant list
-    	    txtlst = fh.read().split()
+            txtlst = fh.read().split()
 
             # take only alphanumerics
-    	    words = [x.lower() for x in txtlst if re.match('^[\w-]+$', x) is not None]
+            words = [x.lower() for x in txtlst if re.match('^[\w-]+$', x) is not None]
 
             # remove stopwords
-            words = [x for x in words if len(x)>2 and (not x in stopwords)] `:s
+            words = [x for x in words if len(x)>2 and (not x in stopwords)]
 
     	# count up frequencies of all words
-    	wcount = {}
-    	for w in words:
+        wcount = {}
+        for w in words:
             wcount[w] = wcount.get(w, 0) + 1
 
         # sort and take top N
-    	top = sorted(wcount.iteritems(), key=itemgetter(1), reverse=True)[:N]
+        top = sorted(wcount.iteritems(), key=itemgetter(1), reverse=True)[:N]
 
-    	top_dict[paper_id] = top # save to our dict
+        # save to our dict
+        top_dict[paper_id] = top
 
     # dump to pickle
     with open(os.path.join(data_dir, 'topwords.p'), 'wb') as fh:
