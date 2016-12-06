@@ -28,7 +28,7 @@ def pdf_to_words(data, data_dir):
     stopwords = get_stop_words('en')
 
     # go over every PDF, use pdftotext to get all words, discard boring ones, and count frequencies
-    top_dict = {} # dict of paperid -> [(word, frequency),...]
+    new_data = {} # dict of paperid -> [(word, frequency),...]
     word_list = []
     for paper_id, info in tqdm.tqdm(data.items(), desc="Parsing PDF for topwords"):
 
@@ -62,18 +62,15 @@ def pdf_to_words(data, data_dir):
         word_list.append(words)
 
         # save to our dict
-        top_dict[paper_id] = top
-
-    # dump to pickle
-    with open(os.path.join(data_dir, 'topwords.pkl'), 'wb') as fh:
-        pickle.dump(top_dict, fh)
+        info.update({'top_words': top})
+        new_data.update({paper_id: info})
 
     # dump text to file for lda
     with open(os.path.join(data_dir, 'text_corpus.txt'), 'w') as fh:
         for words in word_list:
             fh.write(" ".join(words) + '\n')
 
-    return top_dict, word_list
+    return new_data, word_list
 
 
 def pdf_to_thumbnails(data, thumbnail_dir):
