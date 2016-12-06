@@ -70,7 +70,7 @@ def pdf_to_words(data, data_dir):
         for words in word_list:
             fh.write(" ".join(words) + '\n')
 
-    return new_data, word_list
+    return new_data
 
 
 def pdf_to_thumbnails(data, thumbnail_dir):

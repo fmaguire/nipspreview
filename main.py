@@ -30,7 +30,7 @@ def main(args):
     data = scrape.parse_html(proceedings_html, project['data'])
 
     # get topwords and texts
-    data, all_text = pdf_parsing.pdf_to_words(data, project['data'])
+    data = pdf_parsing.pdf_to_words(data, project['data'])
 
     # generate thumbnails
     data = pdf_parsing.pdf_to_thumbnails(data, project['thumbs'])
