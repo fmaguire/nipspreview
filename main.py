@@ -34,21 +34,19 @@ def main(args):
         with open(data_path, 'rb') as fh:
             data = pickle.load(fh)
 
-    # get topwords
-    top_words = pdf_parsing.pdf_to_words(data, project['data'])
+    # get topwords and texts
+    top_words, all_text = pdf_parsing.pdf_to_words(data, project['data'])
 
-    ## generate thumbnails
-    data = pdf_parsing.pdf_to_thumbnails(data, project['thumbs'])
+    # generate thumbnails
+    if len(os.listdir(project['thumbs'])) == 0:
+        data = pdf_parsing.pdf_to_thumbnails(data, project['thumbs'])
 
-    # save data dict updated with thumbnail paths
-    with open(data_path, 'wb') as fh:
-        pickle.dump(data, fh)
-
-    # create corpus
-    # all_papers =
+        ## save data dict updated with thumbnail paths
+        with open(data_path, 'wb') as fh:
+            pickle.dump(data, fh)
 
     # perform LDA
-    #lda lda.
+
 
     # generate html
     #generate_output.xxxx

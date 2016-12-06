@@ -17,7 +17,9 @@ def pdf_to_words(data, data_dir):
     """
     go over all pdfs in NIPS, get all the words from each, discard stop words,
     count frequencies of all words, retain top 100 for each PDF and dump a
-    pickle of results into topwords.p
+    pickle of results into topwords.pkl
+
+    also dump word lists of words ocurring more than 3 times to file
     """
 
     N = 100 # how many top words to retain
@@ -27,6 +29,7 @@ def pdf_to_words(data, data_dir):
 
     # go over every PDF, use pdftotext to get all words, discard boring ones, and count frequencies
     top_dict = {} # dict of paperid -> [(word, frequency),...]
+    word_list = []
     for paper_id, info in tqdm.tqdm(data.items(), desc="Parsing PDF for topwords"):
 
     	# create text file
@@ -54,12 +57,23 @@ def pdf_to_words(data, data_dir):
         # sort and take top N
         top = sorted(wcount.items(), key=itemgetter(1), reverse=True)[:N]
 
+        # only take words that occur at least a bit (for efficiency)
+        words = [x for x in words if wcount[x] >= 3]
+        word_list.append(words)
+
         # save to our dict
         top_dict[paper_id] = top
 
     # dump to pickle
     with open(os.path.join(data_dir, 'topwords.pkl'), 'wb') as fh:
         pickle.dump(top_dict, fh)
+
+    # dump text to file for lda
+    with open(os.path.join(data_dir, 'text_corpus.txt'), 'w') as fh:
+        for words in word_list:
+            fh.write(" ".join(words) + '\n')
+
+    return top_dict, word_list
 
 
 def pdf_to_thumbnails(data, thumbnail_dir):
