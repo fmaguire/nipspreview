@@ -20,7 +20,7 @@ def build_dir_structure(path):
 
     directories = {'base': path}
 
-    for subdir in ["content", "abstracts", "thumbs", "js"]:
+    for subdir in ["data", "content", "abstracts", "thumbs", "js"]:
         subpath = os.path.join(path, subdir)
         os.mkdir(subpath)
         directories.update({subdir: subpath})

@@ -1,79 +1,65 @@
-# scrape the NIPS25.html file looking for authors names, titles
-# and create a database of all papers. This is necessary because
-# extracting the authors and titles from PDFs directly is tricky.
-
-from HTMLParser import HTMLParser
-import cPickle as pickle
-
-class Paper:
-	def __init__(self):
-		self.paper = "" # the id of the paper
-		self.title = "" # the title of the paper
-		self.authors = "" # the author list of the paper
-
-# create a subclass of HTMLParser and override handler methods
-# this is an event-driven parser so we maintain a state etc.
-# this is super hacky and tuned to the specifics of the .html
-# page provided by NIPS.
-class MyHTMLParser(HTMLParser):
-	def __init__(self):
-		HTMLParser.__init__(self)
-		self.firstPaperEncountered = False
-		self.curPaper = Paper()
-		self.allPapers = []
-
-	def handle_starttag(self, tag, attrs):
-		if not tag == 'a': return
-
-		# attrs is a list of (key, value) pairs
-		for k,v in attrs:
-			if k == 'name':
-				print "New paper: " + v
-
-				if self.firstPaperEncountered:
-					# push current paper to stack
-					self.allPapers.append(self.curPaper)
-
-				# this signals new paper being read
-				self.curPaper = Paper() # start a new paper
-				self.curPaper.paper = v[1:] # for some reason first character is P, then follows the 4-digit ID
-				self.firstPaperEncountered = True
-
-	def handle_endtag(self, tag):
-		if not self.firstPaperEncountered: return
-
-	def handle_data(self, data):
-		if not self.firstPaperEncountered: return
-
-		# there are many garbage data newlines, get rid of it
-		s = data.strip()
-		if len(s) == 0: return
-
-		# title is first data encountered, then authors
-		if self.curPaper.title == "":
-			self.curPaper.title = data
-			print 'title ' + data
-			return
-
-		if self.curPaper.authors == "":
-			self.curPaper.authors = data
-			print 'authors ' + data
-			return
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+submodule to scrape the html page for author details and grab
+the papers
+"""
 
 
-def scrape(offline_html):
+from bs4 import BeautifulSoup
+import urllib.request
+
+def get_source(html):
     """
-    Scrape NIPS papers
+    Fetch html into output file
     """
 
-    parser = MyHTMLParser()
-    f = open(offline_html).read()
-    parser.feed(f)
+    with urllib.request.urlopen(html) as response:
+        source = response.read()
 
-    outdict = {}
-    for p in parser.allPapers:
-    	outdict[p.paper] = (p.title, p.authors)
+    return source
 
-    # dump a dictionary indexed by paper id that points to (title, authors) tuple
-    pickle.dump(outdict, open("papers.p", "wb"))
+def parse_html(html, data_dir):
 
+    data = get_source(html)
+
+    with open(os.path.join(data_dir, 'source.html'), 'wb') as fh:
+        fh.write(data)
+
+    soup = BeautifulSoup(data, 'html.parser')
+
+    papers = {}
+
+    # only look at the main-container div
+    for main in soup.find_all('div', class_='main-container'):
+        for paper in main.find_all('li'):
+            title = paper.a.get_text()
+            url = "/".join(html.split('/')[:3]) + paper.a['href']
+            paper_id = paper.a['href'].split('/')[2].split('-')[0]
+            authors = [x.get_text() for x in paper.find_all('a', class_='author')]
+
+            # skip papers without author information
+            if len(authors) == 0:
+                continue
+
+            # get pdf
+            pdf = get_source(url + ".pdf")
+            pdf_path = os.path.join(data_dir, title+".pdf")
+
+            with open(pdf_path, 'wb') as fh:
+                fh.write(pdf)
+
+            # get abstract
+            paper_html = get_source(url)
+            paper_soup = BeautifulSoup(paper_html, 'html.parser')
+            abstract = paper_soup.find('p', class_='abstract').get_text()
+
+            papers.update({paper_id: {'title': title,
+                                      'authors': authors,
+                                      'abstract': abstract,
+                                      'url': url,
+                                      'pdf': pdf_path}})
+
+    with open(os.path.join(data_dir, 'papers.pkl')
+
+    return papers

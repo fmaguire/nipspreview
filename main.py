@@ -6,6 +6,7 @@ import sys
 import os
 import nips_preview
 from nips_preview import utils
+from nips_preview import scrape
 
 
 def main(args):
@@ -20,11 +21,7 @@ def main(args):
     project = utils.build_dir_structure(output_path)
 
     # get source html page
-    source_path = os.path.join(project['content'], "source.html")
-    utils.get_source(proceedings_html, source_path)
-    project.update({'source': source_path})
-
-    print(project)
+    data = scrape.parse_html(proceedings_html, project['data'])
 
 
 if __name__ == '__main__':
