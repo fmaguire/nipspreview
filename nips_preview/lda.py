@@ -6,7 +6,9 @@
 # (c)2010-2011 Nakatani Shuyo / Cybozu Labs Inc.
 
 import numpy
+import os
 import pickle
+from nips_preview import vocabulary
 
 class LDA:
     def __init__(self, K, alpha, beta, docs, V, smartinit=True):
@@ -115,7 +117,6 @@ def output_word_topic_dist(lda, voca, output_path):
 
 def main():
     import optparse
-    import vocabulary
     parser = optparse.OptionParser()
     parser.add_option("-f", dest="filename", help="corpus filename")
     parser.add_option("-c", dest="corpus", help="using range of Brown corpus' files(start:end)")
@@ -159,7 +160,8 @@ def run_lda(corpus_file, output_path):
                'stopwords': False}
 
     corpus = vocabulary.load_file(corpus_file)
-    voca = vocabulary.Vocabulary(options['stop_words'])
+    voca = vocabulary.Vocabulary(options['stopwords'])
+    docs = [voca.doc_to_ids(doc) for doc in corpus]
 
     lda = LDA(options['K'], options['alpha'], options['beta'],
               docs, voca.size(), options['smartinit'])

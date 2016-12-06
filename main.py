@@ -9,7 +9,7 @@ import nips_preview
 from nips_preview import utils
 from nips_preview import scrape
 from nips_preview import pdf_parsing
-#from nips_preview import lda
+from nips_preview import lda
 from nips_preview import generate_output
 
 
