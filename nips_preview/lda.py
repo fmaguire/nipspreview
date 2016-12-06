@@ -76,7 +76,7 @@ class LDA:
             N += len(doc)
         return numpy.exp(log_per / N)
 
-def lda_learning(lda, iteration, voca):
+def lda_learning(lda, iteration, voca, output_path):
     pre_perp = lda.perplexity()
     print("initial perplexity=%f" % pre_perp)
     for i in range(iteration):
@@ -85,13 +85,13 @@ def lda_learning(lda, iteration, voca):
         print("-%d p=%f" % (i + 1, perp))
         if pre_perp:
             if pre_perp < perp:
-                output_word_topic_dist(lda, voca)
+                output_word_topic_dist(lda, voca, output_path)
                 pre_perp = None
             else:
                 pre_perp = perp
-    output_word_topic_dist(lda, voca)
+    output_word_topic_dist(lda, voca, output_path)
 
-def output_word_topic_dist(lda, voca):
+def output_word_topic_dist(lda, voca, output_path):
     zcount = numpy.zeros(lda.K, dtype=int)
     wordcount = [dict() for k in range(lda.K)]
     for xlist, zlist in zip(lda.docs, lda.z_m_n):
@@ -108,7 +108,9 @@ def output_word_topic_dist(lda, voca):
         for w in numpy.argsort(-phi[k])[:20]:
             print("%s: %f (%d)" % (voca[w], phi[k,w], wordcount[k].get(w,0)))
 
-    with open('ldalphi.pkl', 'wb') as fh:
+
+    output = os.path.join(output_path, 'ldalphi.pkl')
+    with open(output, 'wb') as fh:
         pickle.dump((lda.K, phi, voca.vocas), fh)
 
 def main():
@@ -125,6 +127,7 @@ def main():
     parser.add_option("--stopwords", dest="stopwords", help="exclude stop words", action="store_true", default=False)
     parser.add_option("--seed", dest="seed", type="int", help="random seed")
     parser.add_option("--df", dest="df", type="int", help="threshold of document freaquency to cut words", default=0)
+    parser.add_option("-o", dest="output", type="str", help="output_path", default=".")
     (options, args) = parser.parse_args()
     if not (options.filename or options.corpus): parser.error("need corpus filename(-f) or corpus range(-c)")
 
@@ -143,9 +146,25 @@ def main():
     lda = LDA(options.K, options.alpha, options.beta, docs, voca.size(), options.smartinit)
     print("corpus=%d, words=%d, K=%d, a=%f, b=%f" % (len(corpus), len(voca.vocas), options.K, options.alpha, options.beta))
 
-    #import cProfile
-    #cProfile.runctx('lda_learning(lda, options.iteration, voca)', globals(), locals(), 'lda.profile')
-    lda_learning(lda, options.iteration, voca)
+    lda_learning(lda, options.iteration, voca, options.output)
+
+
+def run_lda(corpus_file, output_path):
+
+    options = {'iterations': 100,
+               'K': 7,
+               'alpha': 0.5,
+               'beta': 0.5,
+               'smartinit': False,
+               'stopwords': False}
+
+    corpus = vocabulary.load_file(corpus_file)
+    voca = vocabulary.Vocabulary(options['stop_words'])
+
+    lda = LDA(options['K'], options['alpha'], options['beta'],
+              docs, voca.size(), options['smartinit'])
+
+    lda_learning(lda, options['iterations'], voca, output_path)
 
 if __name__ == "__main__":
     main()

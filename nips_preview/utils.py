@@ -31,14 +31,3 @@ def build_dir_structure(path):
     return directories
 
 
-def get_source(html, output_path):
-    """
-    Fetch html into output file
-    """
-
-    with urllib.request.urlopen(html) as response:
-        source = response.read()
-
-    with open(output_path, 'wb') as out_fh:
-        out_fh.write(source)
-

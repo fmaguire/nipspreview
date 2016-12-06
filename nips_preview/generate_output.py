@@ -7,6 +7,7 @@ import pickle
 
 from numpy import argmax, zeros, ones
 from math import log
+import os
 
 def build_html(data, project_dirs):
 
@@ -76,12 +77,12 @@ def build_html(data, project_dirs):
         # some top100 words may not have been computed during LDA so exclude them if
         # they aren't found in wtoid
         t = [x[0] for x in topwords if x[0] in wtoid]
-    	tid = [int(argmax(phi[:, wtoid[x]])) for x in t] # assign each word to class
+        tid = [int(argmax(phi[:, wtoid[x]])) for x in t] # assign each word to class
 
         tcat = ""
         for k in range(ldak):
             ws = [x for i,x in enumerate(t) if tid[i]==k]
-            tcat += '[<span class="t'+ `k` + '">' + ", ".join(ws) + '</span>] '
+            tcat += '[<span class="t'+ k + '">' + ", ".join(ws) + '</span>] '
 
         # count up the complete distribution for the entire document and build up
         # a javascript vector storing all this
@@ -96,25 +97,26 @@ def build_html(data, project_dirs):
         for k in range(ldak):
             nums[k] = "%.2f" % (float(svec[k]), )
 
-`       js += "[" + ",".join(nums) + "]"
-        if not pid == len(data)-1: js += ","
+        js += "[" + ",".join(nums) + "]"
+        if not pid == len(data)-1:
+            js += ","
 
-    	# dump similarities of this document to others
-    	scores = ["%.2f" % (float(ds[pid, i]),) for i in range(N)]
-    	js2 += "[" + ",".join(scores) + "]"
-    	if not pid == len(data)-1: js2 += ","
+        # dump similarities of this document to others
+        scores = ["%.2f" % (float(ds[pid, i]),) for i in range(N)]
+        js2 += "[" + ",".join(scores) + "]"
+        if not pid == len(data)-1:
+            js2 += ","
 
+        s += """
 
-    	s += """
-
-    	<div class="apaper" id="pid%d">
-    	<div class="paperdesc">
-    		<span class="ts">%s</span><br />
-    		<span class="as">%s</span><br /><br />
-    	</div>
-    	<div class="dllinks">
-    		<a href="%s">[pdf] </a>
-    		<span class="sim" id="sim%d">[rank by tf-idf similarity to this]</span><br />
+        <div class="apaper" id="pid%d">
+        <div class="paperdesc">
+            <span class="ts">%s</span><br />
+            <span class="as">%s</span><br /><br />
+        </div>
+        <div class="dllinks">
+            <a href="%s">[pdf] </a>
+            <span class="sim" id="sim%d">[rank by tf-idf similarity to this]</span><br />
     		<span class="abstr" id="ab%d">[abstract]</span>
     	</div>
     	<img src = "%s"><br />
