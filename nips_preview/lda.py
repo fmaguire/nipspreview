@@ -111,7 +111,7 @@ def output_word_topic_dist(lda, voca, output_path):
             print("%s: %f (%d)" % (voca[w], phi[k,w], wordcount[k].get(w,0)))
 
 
-    output = os.path.join(output_path, 'ldalphi.pkl')
+    output = os.path.join(output_path, 'ldaphi.pkl')
     with open(output, 'wb') as fh:
         pickle.dump((lda.K, phi, voca.vocas), fh)
 

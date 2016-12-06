@@ -1,7 +1,13 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+def template(abstract_dir):
+
+    html="""
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>NIPS 2012 Accepted Papers</title>
+<title>NIPS 2016 Accepted Papers</title>
 
 <style>
 /* CSS */
@@ -124,10 +130,10 @@ h1 {
 
 </style>
 
-<script src="jquery-1.8.3.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script>
 
-// this line below will get filled in with database of LDA topic distributions for top words 
+// this line below will get filled in with database of LDA topic distributions for top words
 // for every paper
 LOADDISTS
 
@@ -183,7 +189,7 @@ function arrangeDivs() {
 				var ci= choices[i];
 				accuma += (ai-ci)*(ai-ci)/(ai+ci);
 				accumb += (bi-ci)*(bi-ci)/(bi+ci);
-			}		
+			}
 			return accuma > accumb ? 1 : -1;
 
 			/*
@@ -218,7 +224,7 @@ function arrangeDivs() {
 
 // when page loads...
 $(document).ready(function(){
-	
+
 	arrangeDivs();
 	colorChoices();
 
@@ -227,7 +233,7 @@ $(document).ready(function(){
 		similarityMode = 0; // make sure this is off
 		var tcid = parseInt($(this).attr('id').substring(2));
 		choices[tcid] = 1 - choices[tcid]; // toggle!
-		
+
 		colorChoices();
 		arrangeDivs();
 	});
@@ -248,7 +254,7 @@ $(document).ready(function(){
 	// user clicks on "abstract button for some paper
 	$(".abstr").click(function() {
 		var pid = parseInt($(this).attr('id').substring(2)); // id of the paper clicked
-		var aurl = "abstracts/a" + pid + ".txt";
+		var aurl = """ + '"' + abstract_dir + """/" + pid + ".txt";
 		var holderdiv = "#abholder" + pid;
 
 		if($(holderdiv).is(':visible')) {
@@ -256,7 +262,7 @@ $(document).ready(function(){
 			$(holderdiv).slideUp(); // hide the abstract away
 
 		} else {
-			
+
 			// do ajax request and fill the abstract div with the result
 			$.ajax({
 	            url : aurl,
@@ -265,7 +271,7 @@ $(document).ready(function(){
 	                $(holderdiv).html(data);
 	                $(holderdiv).slideDown();
 	            }
-	        });	
+	        });
 		}
 	});
 });
@@ -277,10 +283,9 @@ $(document).ready(function(){
 <body>
 
 <div id ="titdiv">
-<h1>NIPS 2012 papers</h1>
-(in nicer format than <a href="http://books.nips.cc/nips25.html">this)</a><br />
-maintained by <a href="https://twitter.com/karpathy">@karpathy</a><br/>
-source code on <a href="https://github.com/karpathy/nipspreview">github</a>
+<h1>NIPS 2016 papers</h1>
+updated from <a href="https://twitter.com/karpathy">@karpathy</a><br/>
+source code on <a href="https://github.com/fmaguire/nipspreview">github</a>
 </div>
 
 <div id="maindiv">
@@ -308,4 +313,5 @@ RESULTTABLE
 <br /><br /><br /><br /><br /><br />
 </body>
 
-</html>
+</html>"""
+    return html

@@ -22,7 +22,7 @@ def get_source(html):
 
     return source
 
-def parse_html(html, data_dir):
+def parse_html(html, data_dir, abstract_dir):
 
     data = get_source(html)
 
@@ -59,9 +59,14 @@ def parse_html(html, data_dir):
             paper_soup = BeautifulSoup(paper_html, 'html.parser')
             abstract = paper_soup.find('p', class_='abstract').get_text()
 
+            abstract_path = os.path.join(abstract_dir, paper_id) + '.txt'
+
+            with open(abstract_path, 'w') as fh:
+                fh.write(abstract)
+
             papers.update({paper_id: {'title': title,
                                       'authors': authors,
-                                      'abstract': abstract,
+                                      'abstract_path': abstract_path,
                                       'url': url,
                                       'pdf_path': pdf_path}})
 
