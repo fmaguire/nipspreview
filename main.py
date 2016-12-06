@@ -4,10 +4,11 @@
 
 import sys
 import os
+import pickle
 import nips_preview
 from nips_preview import utils
 from nips_preview import scrape
-#from nips_preview import pdf_parsing
+from nips_preview import pdf_parsing
 #from nips_preview import lda
 #from nips_preview import generate_output
 
@@ -26,14 +27,22 @@ def main(args):
 
     # scrape pdfs using the existence of papers.pkl as a marker
     # to check if this is necessary
-    if not os.path.exists(os.path.join(project['data'], 'papers.pkl'));
+    data_path = os.path.join(project['data'], 'papers.pkl')
+    if not os.path.exists(data_path):
         data = scrape.parse_html(proceedings_html, project['data'])
+    else:
+        with open(data_path, 'rb') as fh:
+            data = pickle.load(fh)
 
     # get topwords
-    #top_words = pdf_parsing.pdf_to_words(data)
+    top_words = pdf_parsing.pdf_to_words(data, project['data'])
 
     ## generate thumbnails
-    #data = pdf_parsing.pdf_to_thumbnail(data)
+    data = pdf_parsing.pdf_to_thumbnails(data, project['thumbs'])
+
+    # save data dict updated with thumbnail paths
+    with open(data_path, 'wb') as fh:
+        pickle.dump(data, fh)
 
     # create corpus
     # all_papers =

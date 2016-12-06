@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 import pickle
 import os
 import urllib.request
+import tqdm
 
 def get_source(html):
     """
@@ -34,7 +35,7 @@ def parse_html(html, data_dir):
 
     # only look at the main-container div
     for main in soup.find_all('div', class_='main-container'):
-        for paper in main.find_all('li'):
+        for paper in tqdm.tqdm(main.find_all('li'), desc="Scraping Papers"):
             title = paper.a.get_text()
             url = "/".join(html.split('/')[:3]) + paper.a['href']
             paper_id = paper.a['href'].split('/')[2].split('-')[0]
@@ -45,7 +46,7 @@ def parse_html(html, data_dir):
                 continue
 
             # get pdf
-            print("Scraping: {}".format(title))
+            # print("Scraping: {}".format(title))
             pdf = get_source(url + ".pdf")
             pdf_path = os.path.join(data_dir, url.split('/')[-1] + ".pdf")
 
