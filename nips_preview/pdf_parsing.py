@@ -87,11 +87,12 @@ def pdf_to_thumbnails(data, thumbnail_dir):
 
         thumb_path = os.path.join(thumbnail_dir, paper_id + ".jpg")
         cmd = "montage {}[0-7] \
+                -trim \
                 -mode Concatenate \
                 -tile x1 \
                 -quality 80 \
                 -resize x230 \
-                -trim {}".format(info['pdf_path'],
+                {}".format(info['pdf_path'],
                                  thumb_path)
 
         os.system(cmd)
