@@ -126,7 +126,7 @@ def build_html(data, project_dirs):
     	<span class="tt">{6}</span>
     	</div>
 
-    	""".format(pid, title, ", ".join(authors), url, int(paper_data[0]),
+    	""".format(pid, title, ", ".join(authors), url + ".pdf", int(paper_data[0]),
                 thumbpath, tcat)
 
     newhtml = html.replace("RESULTTABLE", s)

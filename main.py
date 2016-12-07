@@ -25,8 +25,8 @@ def main(args):
     # build project structure
     project = utils.build_dir_structure(output_path)
 
-    # scrape pdfs using the existence of papers.pkl as a marker
-    # to check if this is necessary
+    ## scrape pdfs using the existence of papers.pkl as a marker
+    ## to check if this is necessary
     data = scrape.parse_html(proceedings_html, project['data'],
                              project['abstracts'])
 
@@ -42,10 +42,6 @@ def main(args):
 
     lda.run_lda(os.path.join(project['data'], "text_corpus.txt"),
                 project['data'])
-
-
-    with open(os.path.join(project['data'], 'papers.pkl'), 'rb') as fh:
-        data = pickle.load(fh)
 
     # generate html
     generate_output.build_html(data, project)

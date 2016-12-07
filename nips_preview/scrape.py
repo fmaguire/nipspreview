@@ -38,7 +38,7 @@ def parse_html(html, data_dir, abstract_dir):
         for paper in tqdm.tqdm(main.find_all('li'), desc="Scraping Papers"):
             title = paper.a.get_text()
             #url = "/".join(html.split('/')[:3]) + paper.a['href']
-            url = "http://papers.nips.cc/" + paper.a['href']
+            url = "http://papers.nips.cc" + paper.a['href']
             paper_id = paper.a['href'].split('/')[2].split('-')[0]
             authors = [x.get_text() for x in paper.find_all('a', class_='author')]
 
