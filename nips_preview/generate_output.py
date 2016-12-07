@@ -73,7 +73,8 @@ def build_html(data, project_dirs):
         authors = info['authors']
         top_words = info['top_words']
         thumbpath = info['thumb_path']
-        pdfpath = info['pdf_path']
+        url = info['url']
+
 
         # some top100 words may not have been computed during LDA so exclude them if
         # they aren't found in wtoid
@@ -125,7 +126,7 @@ def build_html(data, project_dirs):
     	<span class="tt">{6}</span>
     	</div>
 
-    	""".format(pid, title, ", ".join(authors), pdfpath, int(paper_data[0]),
+    	""".format(pid, title, ", ".join(authors), url, int(paper_data[0]),
                 thumbpath, tcat)
 
     newhtml = html.replace("RESULTTABLE", s)

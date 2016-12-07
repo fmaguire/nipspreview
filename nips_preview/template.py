@@ -48,7 +48,7 @@ h1 {
 }
 
 #maindiv {
-	width: 970px;
+	width: 90%;
 	padding: 15px;
 	margin-left: auto;
 	margin-right: auto;
@@ -284,13 +284,13 @@ $(document).ready(function(){
 
 <div id ="titdiv">
 <h1>NIPS 2016 papers</h1>
-updated from <a href="https://twitter.com/karpathy">@karpathy</a><br/>
-source code on <a href="https://github.com/fmaguire/nipspreview">github</a>
+Originally by <a href="https://twitter.com/karpathy">@karpathy</a> updated by <a href="http://finlaymagui.re">Finlay Maguire</a><br/>
+Source available on <a href="https://github.com/fmaguire/nipspreview">github</a>
 </div>
 
 <div id="maindiv">
 <div id="explanation">Below every paper are TOP 100 most-occuring words in that paper and their color is based on LDA topic model with k = 7.<br />
-	<div style="font-size: 12px;">(It looks like 0 = theory, 1 = reinforcement learning, 2 = graphical models, 3 = deep learning/vision, 4 = optimization, 5 = neuroscience, 6 = embeddings etc.) </div>
+	<div style="font-size: 12px;">(It looks like 0 = ?, 1 = ?, 2 = ?, 3 = ?, 4 = ?, 5 = ?, 6 = ? etc.) </div>
 </div>
 <div id="sortoptions">
 Toggle LDA topics to sort by:

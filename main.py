@@ -27,21 +27,21 @@ def main(args):
 
     # scrape pdfs using the existence of papers.pkl as a marker
     # to check if this is necessary
-    #data = scrape.parse_html(proceedings_html, project['data'],
-    #                         project['abstracts'])
+    data = scrape.parse_html(proceedings_html, project['data'],
+                             project['abstracts'])
 
-    ### get topwords and texts
-    #data = pdf_parsing.pdf_to_words(data, project['data'])
+    ## get topwords and texts
+    data = pdf_parsing.pdf_to_words(data, project['data'])
 
-    ### generate thumbnails
-    #data = pdf_parsing.pdf_to_thumbnails(data, project['thumbs'])
+    ## generate thumbnails
+    data = pdf_parsing.pdf_to_thumbnails(data, project['thumbs'])
 
-    #with open(os.path.join(project['data'], 'papers.pkl'), 'wb') as fh:
-    #    pickle.dump(data, fh)
+    with open(os.path.join(project['data'], 'papers.pkl'), 'wb') as fh:
+        pickle.dump(data, fh)
 
 
-    #lda.run_lda(os.path.join(project['data'], "text_corpus.txt"),
-    #            project['data'])
+    lda.run_lda(os.path.join(project['data'], "text_corpus.txt"),
+                project['data'])
 
 
     with open(os.path.join(project['data'], 'papers.pkl'), 'rb') as fh:
